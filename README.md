@@ -9,7 +9,7 @@ Jalali Wrapper around [time.Time](https://golang.org/pkg/time), you can use all 
 Note that you need to include the **v** in the version tag.
 
 ```
-$ go get github.com/ItsAminZamani/gojalali@v0.1.0
+$ go get github.com/ItsAminZamani/gojalali@v0.1.2
 ```
 
 ```go
