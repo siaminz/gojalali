@@ -3,9 +3,13 @@
  * File: time_wrapper.go
  */
 
-package time
+package gojalali
 
-import "time"
+import (
+	"fmt"
+	"strconv"
+	"time"
+)
 
 type Jalali struct {
 	time.Time
@@ -27,6 +31,45 @@ const (
 	Bahman
 	Esfand
 )
+
+var months = []string{
+	"فروردین", "اردیبهشت", "خرداد",
+	"تیر", "مرداد", "شهریور",
+	"مهر", "آبان", "آذر",
+	"دی", "بهمن", "اسفند",
+}
+
+func (m Month) String() string {
+	if Farvardin <= m && m <= Esfand {
+		return months[m-1]
+	}
+	return "%!Month(" + strconv.Itoa(int(m)) + ")"
+}
+
+type Weekday int
+
+const (
+	Shanbe Weekday = iota
+	YekShanbe
+	DoShanbe
+	SeShanbe
+	ChaharShanbe
+	PanjShanbe
+	Jomee
+)
+
+var weekDays = []string{
+	"شنبه", "یک\u200cشنبه", "دوشنبه",
+	"سه\u200cشنبه", "چهارشنبه", "پنج\u200cشنبه",
+	"جمعه",
+}
+
+func (d Weekday) String() string {
+	if Shanbe <= d && d <= Jomee {
+		return weekDays[d]
+	}
+	return "%!Weekday(" + strconv.Itoa(int(d)) + ")"
+}
 
 func (j Jalali) Year() int {
 	year, month, day := j.Time.Date()
@@ -68,12 +111,21 @@ func (j Jalali) Location() *time.Location {
 	return j.Time.Location()
 }
 
-func (j Jalali) Weekday() time.Weekday {
-	return j.Time.Weekday()
+func (j Jalali) Weekday() Weekday {
+	weekDay := j.Time.Weekday()
+	if weekDay == 6 {
+		return Shanbe
+	}
+	return Weekday(weekDay + 1)
 }
 
 func (j Jalali) YearDay() int {
-	return j.Time.YearDay()
+	month := j.Month() - 1
+	day := j.Day()
+	for i := 1; i < int(month); i++ {
+		day += monthDays(i, j.Year())
+	}
+	return day
 }
 
 func (j Jalali) Unix() int64 {
@@ -85,27 +137,27 @@ func (j Jalali) UnixNano() int64 {
 }
 
 func (j Jalali) String() string {
-	return j.Time.String()
+	return fmt.Sprintf("%d/%02d/%02d %02d:%02d:%02d", j.Year(), j.Month(), j.Day(), j.Hour(), j.Minute(), j.Second())
 }
 
-func (j Jalali) Format(layout string) string {
-	return j.Time.Format(layout)
+func (j Jalali) Georgian() time.Time {
+	return j.Time
 }
 
-func (j Jalali) Add(d time.Duration) time.Time {
-	return j.Time.Add(d)
+func (j Jalali) Add(d time.Duration) Jalali {
+	return Jalali{j.Time.Add(d)}
 }
 
-func (j Jalali) AddDate(years int, months int, days int) time.Time {
-	return j.Time.AddDate(years, months, days)
+func (j Jalali) AddDate(years int, months int, days int) Jalali {
+	return Jalali{j.Time.AddDate(years, months, days)}
 }
 
 func (j Jalali) Sub(u time.Time) time.Duration {
 	return j.Time.Sub(u)
 }
 
-func (j Jalali) In(loc *time.Location) time.Time {
-	return j.Time.In(loc)
+func (j Jalali) In(loc *time.Location) Jalali {
+	return Jalali{j.Time.In(loc)}
 }
 
 func (j Jalali) Equal(u time.Time) bool {
@@ -140,6 +192,6 @@ func (j Jalali) Clock() (hour, min, sec int) {
 	return j.Time.Clock()
 }
 
-func (j Jalali) Date() (year int, month time.Month, day int) {
-	return j.Time.Date()
+func (j Jalali) Date() (year int, month Month, day int) {
+	return j.Year(), j.Month(), j.Day()
 }

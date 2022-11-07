@@ -1,4 +1,4 @@
-package time
+package gojalali
 
 import "time"
 
@@ -51,4 +51,22 @@ func toJalali(month time.Month, day int) (int, int) {
 		return 9, day + 9
 	}
 	return 0, 0
+}
+
+func monthDays(month int, year int) int {
+	if month <= 6 {
+		return 31
+	} else if month <= 11 {
+		return 30
+	} else if month == 12 {
+		if isLeapYear(year) {
+			return 30
+		}
+		return 29
+	}
+	return 0
+}
+
+func isLeapYear(year int) bool {
+	return year%33 == 1 || year%33 == 5 || year%33 == 9 || year%33 == 13 || year%33 == 17 || year%33 == 22 || year%33 == 26 || year%33 == 30
 }
