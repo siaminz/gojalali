@@ -1,15 +1,15 @@
-# github.com/ItsAminZamani/gojalali
+# github.com/siaminz/gojalali
+
 Jalali Wrapper around [time.Time](https://golang.org/pkg/time), you can use all method from `time` package with this module.
 
 ## Usage
-
 
 ### Get the gojalali module
 
 Note that you need to include the **v** in the version tag.
 
 ```
-$ go get github.com/ItsAminZamani/gojalali@v0.1.2
+$ go get github.com/siaminz/gojalali@v0.1.2
 ```
 
 ```go
@@ -18,7 +18,7 @@ package main
 import (
     "fmt"
 
-    "github.com/ItsAminZamani/gojalali"
+    "github.com/siaminz/gojalali"
 )
 
 func main() {

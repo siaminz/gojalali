@@ -1,3 +1,3 @@
-module github.com/ItsAminZamani/gojalali
+module github.com/siaminz/gojalali
 
 go 1.19
